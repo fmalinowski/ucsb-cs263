@@ -17,9 +17,11 @@ public class Enqueue extends HttpServlet {
         String key = request.getParameter("keyname");
         String value = request.getParameter("value");
 
-        // Add the task to the default queue.
-        Queue queue = QueueFactory.getDefaultQueue();
-        queue.add(TaskOptions.Builder.withUrl("/worker").param("keyname", key).param("value", value));
+        if (key != null && value != null && !key.isEmpty() && !value.isEmpty()) {
+        	// Add the task to the default queue.
+            Queue queue = QueueFactory.getDefaultQueue();
+            queue.add(TaskOptions.Builder.withUrl("/worker").param("keyname", key).param("value", value));
+        }
 
         response.sendRedirect("/done.html");
     }
