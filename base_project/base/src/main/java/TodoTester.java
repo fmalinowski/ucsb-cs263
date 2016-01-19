@@ -45,8 +45,7 @@ public class TodoTester {
 				.accept(MediaType.APPLICATION_XML).get(String.class));
 
 		// Get Todo with id 1
-		Response checkDelete = service.path("rest").path("todos/1").request()
-				.accept(MediaType.APPLICATION_XML).get();
+		System.out.println(service.path("rest").path("todos/1").request().accept(MediaType.APPLICATION_XML).get(String.class));
 
 		// Delete Todo with id 1
 		service.path("rest").path("todos/1").request().delete();
@@ -76,6 +75,6 @@ public class TodoTester {
 
 	private static URI getBaseURI() {
 		return UriBuilder.fromUri(
-				"http://localhost:8080/com.vogella.jersey.todo").build();
+				"http://localhost:8080/").build();
 	}
 }
