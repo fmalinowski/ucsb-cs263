@@ -69,7 +69,7 @@ public class TaskDataResource {
 		}
 		
 		datastore.put(task);
-		syncCache.put(this.keyname, val);
+		syncCache.put(this.keyname, task);
  
 		return res;
 	}
@@ -80,9 +80,11 @@ public class TaskDataResource {
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
 		syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
 		
+		System.out.println("Deleting TaskData for " + keyname);
+		
 		try {
 			datastore.delete(KeyFactory.createKey("TaskData", this.keyname));
-			syncCache.delete(KeyFactory.createKey("TaskData", this.keyname));
+			syncCache.delete(this.keyname);
 		}
 		catch (Exception e) {
 			System.out.println("Couldn't delete " + this.keyname);
@@ -98,7 +100,8 @@ public class TaskDataResource {
 		Entity taskResult;
 
 		if (syncCache.contains(this.keyname)) {
-			return new TaskData(this.keyname, (String)syncCache.get(this.keyname), new Date());
+			Entity entity = (Entity) syncCache.get(this.keyname);
+			return new TaskData(this.keyname, (String)entity.getProperty("value"), (Date)entity.getProperty("date"));
 		} 
 		else {
 			try {
@@ -106,7 +109,7 @@ public class TaskDataResource {
 				String value = (String) taskResult.getProperty("value");
 				Date date = (Date) taskResult.getProperty("date");
 
-				syncCache.put(this.keyname, value);
+				syncCache.put(this.keyname, taskResult);
 
 				return new TaskData(this.keyname, value, date);
 			} catch (EntityNotFoundException e) {

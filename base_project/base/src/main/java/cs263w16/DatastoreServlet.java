@@ -43,7 +43,8 @@ public class DatastoreServlet extends HttpServlet {
 		  resp.getWriter().println("<hr><h2>Here are the entries in memcache</h2>");
 		  for (String keyname : keynames) {
 			  if (syncCache.contains(keyname)) {
-				  resp.getWriter().println(keyname + " - " + syncCache.get(keyname) + "<br>");
+				  Entity entity = (Entity)syncCache.get(keyname);
+				  resp.getWriter().println(keyname + " - " + entity.getProperty("value") + " - " + (Date)entity.getProperty("date") + "<br>");
 			  }
 		  }
 		  
@@ -64,7 +65,7 @@ public class DatastoreServlet extends HttpServlet {
 			  Date date = (Date) taskResult.getProperty("date");
 			  
 			  if (!foundInMemcache) {
-				  syncCache.put(req.getParameter("keyname"), value);
+				  syncCache.put(req.getParameter("keyname"), taskResult);
 			  }
 			  
 			  resp.getWriter().println("Found: " + foundString + " | " + value + " - " + date + "<br><br>");
@@ -82,7 +83,7 @@ public class DatastoreServlet extends HttpServlet {
 		  task.setProperty("date", new Date());
 		  
 		  datastore.put(task);
-		  syncCache.put(keyname, value);
+		  syncCache.put(keyname, task);
 		  
 		  resp.getWriter().println("Stored " + keyname + " and " + value + " in Datastore<br>");
 		  resp.getWriter().println("Stored " + keyname + " and " + value + " in Memcache");

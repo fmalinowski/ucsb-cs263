@@ -56,10 +56,10 @@ public class DatastoreResource {
 		task.setProperty("date", date);
 
 		datastore.put(task);
-		syncCache.put(keyname, value);
+		syncCache.put(keyname, task);
 		
 		System.out.println("Posting new TaskData: " + keyname + " val: " + value + " ts: " + date);
-		servletResponse.sendRedirect("../done.html");
+		servletResponse.sendRedirect("/done.html");
 	}
 
 	// The @PathParam annotation says that keyname can be inserted as parameter
